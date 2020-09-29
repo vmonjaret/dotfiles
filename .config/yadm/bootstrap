@@ -1,0 +1,60 @@
+#!/bin/sh
+
+zsh_custom=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
+
+cd "$HOME"
+
+sudo apt update && sudo apt install -yyq curl build-essential fonts-firacode libbz2-dev libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libxslt-dev php7.4-cli php7.4-bz2 pkg-config  tilix zsh zsh-syntax-highlighting
+
+
+if [ ! -d "$ZSH" ]; then
+    echo "Installing Oh My Zsh"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    chsh -s /bin/zsh $(whoami)
+fi
+
+if [ ! -d "$zsh_custom/themes/spaceship-prompt" ]; then
+    echo "Install Spaceship Prompt"
+    git clone https://github.com/denysdovhan/spaceship-prompt.git "$zsh_custom/themes/spaceship-prompt" --depth=1
+    ln -s "$zsh_custom/themes/spaceship-prompt/spaceship.zsh-theme" "$zsh_custom/themes/spaceship.zsh-theme" 
+fi
+
+if [ ! -d $zsh_custom/plugins/zsh-autosuggestions ]; then
+    echo "Installing Zsh Autosuggestions"
+    git clone https://github.com/zsh-users/zsh-autosuggestions $zsh_custom/plugins/zsh-autosuggestions
+fi
+
+if ! command -v docker > /dev/null 2>&1; then
+    echo "Installing Docker"
+    curl -fsSL https://get.docker.com | sh
+    sudo usermod -aG docker $(whoami)
+
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+fi
+
+if ! command -v nvm > /dev/null 2>&1; then
+    echo "Installing NVM"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
+fi
+
+if ! command -v phpbrew > /dev/null 2>&1; then
+    echo "Installing PHPBrew"
+    curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
+    chmod +x phpbrew
+    sudo mv phpbrew /usr/local/bin/phpbrew
+    /usr/local/bin/phpbrew init
+fi
+
+if ! command -v composer > /dev/null 2>&1; then
+    echo "Installing composer"
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+fi
+
+if ! command -v symfony > /dev/null 2>&1; then
+    echo "Installing Symfony CLI"
+    wget https://get.symfony.com/cli/installer -O - | bash
+    sudo mv /home/junior/.symfony/bin/symfony /usr/local/bin/symfony
+fi
+
+source ~/.zshrc
