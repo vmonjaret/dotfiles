@@ -1,0 +1,14 @@
+[user]
+	email = vmonjaret@gmail.com
+	name = Vincent Monjaret
+
+[core]
+	excludesfile = ~/.gitignore
+
+[color]
+	ui = auto
+
+[commit]
+	gpgsign = true
+[pull]
+	rebase = true
